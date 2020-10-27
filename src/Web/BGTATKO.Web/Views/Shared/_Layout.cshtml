@@ -1,12 +1,19 @@
-﻿@using BGTATKO.Common
+﻿@using Microsoft.AspNetCore.Identity
+@using BGTATKO.Common
+@using BGTATKO.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@{ var user = await this.SignInManager.UserManager.GetUserAsync(this.User); }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
+
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/robotoCondensed.css" rel="stylesheet" />
+    <script src="https://cdn.tiny.cloud/1/dugs9z1a0rbd72se2jv2pyteyj2zvy4oq9iwb7abufch5vi3/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
     <header>
@@ -23,25 +30,34 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (this.SignInManager.IsSignedIn(this.User))
+                        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Categories" asp-action="Create">Create Category</a>
+            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Posts" asp-action="Create">Write Post</a>
+                            </li>
+                                            @if (await this.SignInManager.UserManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName))
+                                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Categories" asp-action="Manage">Manage Categories</a>
+                            </li>}}
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    
+
     <div class="container">
-        <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @this.RenderBody()
         </main>
     </div>
-    
+
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; @DateTime.Now.Year - @GlobalConstants.SystemName - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - @GlobalConstants.SystemName
         </div>
     </footer>
 
@@ -50,6 +66,7 @@
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <script src="https://kit.fontawesome.com/09e9cf0270.js" crossorigin="anonymous"></script>
     @await this.RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
