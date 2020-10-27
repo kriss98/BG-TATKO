@@ -5,14 +5,14 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    using AspNetCoreTemplate.Data;
-    using AspNetCoreTemplate.Data.Common;
-    using AspNetCoreTemplate.Data.Common.Repositories;
-    using AspNetCoreTemplate.Data.Models;
-    using AspNetCoreTemplate.Data.Repositories;
-    using AspNetCoreTemplate.Data.Seeding;
-    using AspNetCoreTemplate.Services.Data;
-    using AspNetCoreTemplate.Services.Messaging;
+    using BGTATKO.Data;
+    using BGTATKO.Data.Common;
+    using BGTATKO.Data.Common.Repositories;
+    using BGTATKO.Data.Models;
+    using BGTATKO.Data.Repositories;
+    using BGTATKO.Data.Seeding;
+    using BGTATKO.Services.Data;
+    using BGTATKO.Services.Messaging;
 
     using CommandLine;
 
