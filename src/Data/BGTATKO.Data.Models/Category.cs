@@ -17,11 +17,6 @@
         public string Name { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [MaxLength(50)]
-        public string Title { get; set; }
-
-        [Required]
         [MinLength(20)]
         [MaxLength(2000)]
         public string Description { get; set; }
