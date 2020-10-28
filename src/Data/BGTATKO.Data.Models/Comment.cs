@@ -6,6 +6,11 @@
 
     public class Comment : BaseDeletableModel<int>
     {
+        public Comment()
+        {
+            this.Votes = new HashSet<VoteForComment>();
+        }
+
         [Required]
         public int PostId { get; set; }
 
@@ -22,5 +27,7 @@
         public int? ParentId { get; set; }
 
         public virtual Comment Parent { get; set; }
+
+        public virtual ICollection<VoteForComment> Votes { get; set; }
     }
 }
