@@ -1,0 +1,42 @@
+﻿@model BGTATKO.Web.ViewModels.Posts.CreatePostInputModel
+
+@{
+    this.ViewData["Title"] = "Write new post";
+    var categories = Model.Categories.Select(x => new SelectListItem(x.Name, x.Id.ToString()));
+}
+
+<script src="https://cdn.tiny.cloud/1/dugs9z1a0rbd72se2jv2pyteyj2zvy4oq9iwb7abufch5vi3/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        plugins: [
+            "image paste table link code media"
+        ]
+    });
+</script>
+
+<div class="col-md-12 text-center mx-auto">
+    <h1>@this.ViewData["Title"]</h1>
+    <form method="post">
+        <hr />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label class="font-weight-bold" asp-for="@Model.Title"></label>
+            <input asp-for="@Model.Title" class="form-control" placeholder="Title..." />
+            <span asp-validation-for="@Model.Title" class="text-danger"></span>
+        </div>
+        <div>
+            <label class="font-weight-bold" asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" asp-items="categories" class="form-control"></select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <h6 class="text-muted my-2">Can't find a suitable category for your post? Click <a asp-controller="Categories" asp-action="Create">here</a> to create a new one!</h6>
+        <div>
+            <label class="font-weight-bold" asp-for="Content"></label>
+            <textarea rows="20" asp-for="Content" class="form-control"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <hr />
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
