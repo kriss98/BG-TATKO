@@ -18,5 +18,9 @@
         public string UserId { get; set; }
 
         public virtual ApplicationUser User { get; set; }
+
+        public int? ParentId { get; set; }
+
+        public virtual Comment Parent { get; set; }
     }
 }
