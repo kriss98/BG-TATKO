@@ -47,5 +47,13 @@
 
             return this.Redirect("/");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ById(int id)
+        {
+            var viewModel = await this.postsService.GetPostByIdAsync<PostViewModel>(id);
+
+            return this.View(viewModel);
+        }
     }
 }

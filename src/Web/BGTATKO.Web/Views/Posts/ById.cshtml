@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Identity
+@using BGTATKO.Common
+@using BGTATKO.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager;
+@model BGTATKO.Web.ViewModels.Posts.PostViewModel
+
+@{
+    this.ViewData["Title"] = Model.Title;
+
+    var currentUser = await this.SignInManager.UserManager.GetUserAsync(this.User);
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="media flex-wrap w-100 align-items-center">
+                        <img width="100" height="100" src="@Model.UserImageUrl" class="d-block rounded-circle" alt="">
+                        <div class="media-body ml-3">
+                            <a asp-controller="Users" asp-action="Show" asp-route-id="@Model.UserId" data-abc="true">@Model.UserUserName</a>
+                            <div class="text-muted small">@Model.TimeSincePosted</div>
+                        </div>
+                        <div class="text-muted small ml-3">
+                            <div>Member since <strong>@Model.UserCreatedOn.Date.ToString("d")</strong></div>
+                            <div><strong>@Model.UserPostsCount</strong> posts</div>
+                            <div><strong>@Model.UserCommentsCount</strong> comments</div>
+                            @if ((this.SignInManager.IsSignedIn(this.User) && currentUser.Id == Model.UserId) || await this.SignInManager.UserManager.IsInRoleAsync(currentUser, GlobalConstants.AdministratorRoleName))
+                            {
+                                <div class="d-flex flex-row justify-content-end mt-1 mx-2">
+                                    <form asp-controller="Posts" asp-action="Edit" method="get" class="mx-1">
+                                        <input type="hidden" asp-for="@Model.Id" />
+                                        <button class="btn btn-success btn-sm">Edit</button>
+                                    </form>
+                                    <form asp-controller="Posts" asp-action="Delete" method="post" class="mx-1">
+                                        <input type="hidden" asp-for="@Model.Id" />
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex align-items-start flex-column mb-1">
+                            <a class="bg-success text-white mb-auto p-1 rounded align-content-start" asp-controller="Categories" asp-action="ById" asp-route-id="@Model.CategoryId">@Model.CategoryName</a>
+                            <h2 class="font-weight-bold">@Model.Title</h2>
+                        </div>
+                    </div>
+                    <hr />
+                    <p>
+                        @Html.Raw(Model.SanitizedContent)
+                    </p>
+                </div>
+                <div class="card-footer d-flex flex-wrap justify-content-between align-items-center px-0 pt-0 pb-3">
+                    <div class="px-4 pt-3"> <a href="#comments" class="text-muted d-inline-flex align-items-center align-middle" data-abc="true"><span class="align-middle fa fa-commenting"> @Model.CommentsCount Comments</span> </a></div>
+                    <div class="px-4 pt-3 d-flex justify-content-end mb-2"> <button type="submit" class="btn btn-primary" onclick="showAddCommentForm()">Write comment</button> </div>
+                </div>
+                <div id="AddCommentForm" style="display: none">
+                    @if (SignInManager.IsSignedIn(this.User))
+                    {
+                        <form asp-controller="Comments" asp-action="Create" method="post">
+                            <div>
+                                <input type="hidden" name="PostId" value="@this.Model.Id" />
+                            </div>
+                            <div>
+                                <textarea rows="10" name="Content" id="Content" class="form-control"></textarea>
+                            </div>
+                            <div class="px-4 pt-3 d-flex justify-content-start mb-2"> <button type="submit" class="btn btn-primary">Add Comment</button> </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <h2 class="text-secondary font-weight-bold text-center">You need to be logged in in order to write comments! Please <a asp-area="Identity" asp-page="/Account/Login">login</a> or <a asp-area="Identity" asp-page="/Account/Register">register</a> now.</h2>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

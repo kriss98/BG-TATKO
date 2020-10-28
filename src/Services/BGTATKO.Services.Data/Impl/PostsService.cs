@@ -7,6 +7,7 @@
     using BGTATKO.Data.Models;
     using Contracts;
     using Mapping;
+    using Microsoft.EntityFrameworkCore;
 
     public class PostsService : IPostsService
     {
@@ -40,6 +41,11 @@
         public int GetPostsCountByCategoryId(int categoryId)
         {
             return this.postsRepository.All().Count(x => x.CategoryId == categoryId);
+        }
+
+        public async Task<T> GetPostByIdAsync<T>(int id)
+        {
+            return await this.postsRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
         }
     }
 }
