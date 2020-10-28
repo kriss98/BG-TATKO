@@ -8,6 +8,7 @@
     using BGTATKO.Data.Models;
     using BGTATKO.Services.Data.Contracts;
     using Mapping;
+    using Microsoft.EntityFrameworkCore;
 
     public class CategoriesService : ICategoriesService
     {
@@ -29,6 +30,13 @@
 
             await this.categoryRepository.AddAsync(category);
             await this.categoryRepository.SaveChangesAsync();
+        }
+
+        public async Task<T> GetByIdAsync<T>(int id)
+        {
+            var category = await this.categoryRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
+
+            return category;
         }
 
         public IEnumerable<T> GetAll<T>(int? count = null)

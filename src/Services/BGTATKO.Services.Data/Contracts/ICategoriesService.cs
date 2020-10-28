@@ -8,6 +8,8 @@
     {
         Task CreateAsync(string name, string description, string imageUrl);
 
+        Task<T> GetByIdAsync<T>(int id);
+
         IEnumerable<T> GetAll<T>(int? count = null);
     }
 }
