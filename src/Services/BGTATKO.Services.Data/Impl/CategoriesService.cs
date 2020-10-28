@@ -34,9 +34,7 @@
 
         public async Task<T> GetByIdAsync<T>(int id)
         {
-            var category = await this.categoryRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
-
-            return category;
+            return await this.categoryRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
         }
 
         public IEnumerable<T> GetAll<T>(int? count = null)
