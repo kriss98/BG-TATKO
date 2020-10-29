@@ -1,11 +1,14 @@
 ﻿namespace BGTATKO.Web.ViewModels.Posts
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using AutoMapper;
     using Data.Models;
     using Ganss.XSS;
     using Services.Mapping;
 
-    public class PostViewModel : IMapTo<Post>, IMapFrom<Post>
+    public class PostViewModel : IMapTo<Post>, IMapFrom<Post>, IHaveCustomMappings
     {
         public int Id { get; set; }
 
@@ -31,12 +34,25 @@
 
         public string UserImageUrl { get; set; }
 
-        public DateTime UserCreatedOn { get; set; }
+        public int VotesCount { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
         public string TimeSincePosted => this.CreatedOn.Date == DateTime.UtcNow.Date
             ? "TODAY"
             : $"{(DateTime.UtcNow.Date - this.CreatedOn.Date).TotalDays} DAYS AGO";
+
+        public DateTime UserCreatedOn { get; set; }
+
+        public IEnumerable<CommentInPostViewModel> Comments { get; set; }
+
+        public void CreateMappings(IProfileExpression configuration)
+        {
+            configuration.CreateMap<Post, PostViewModel>()
+                .ForMember(x => x.VotesCount, options =>
+                {
+                    options.MapFrom(p => p.Votes.Sum(v => (int)v.Type));
+                });
+        }
     }
 }
