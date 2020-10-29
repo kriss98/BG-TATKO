@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BGTATKO.Web.ViewModels.VotesForComments
+﻿namespace BGTATKO.Web.ViewModels.VotesForComments
 {
-    class VoteForCommentResponseModel
+    public class VoteForCommentResponseModel
     {
+        public int VotesCount { get; set; }
     }
 }

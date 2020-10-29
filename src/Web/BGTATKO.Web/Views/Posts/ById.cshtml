@@ -9,7 +9,109 @@
     this.ViewData["Title"] = Model.Title;
 
     var currentUser = await this.SignInManager.UserManager.GetUserAsync(this.User);
+
+    async Task<HtmlString> DisplayComments(int? parentId)
+    {
+        var comments = Model.Comments.Where(x => x.ParentId == parentId).ToList();
+
+        if (!comments.Any())
+        {
+            return null;
+        }
+
+        foreach (var comment in comments)
+        {
+            var formId = "AddReplyForm" + comment.Id;
+            var upvoteId = "commentUpVote" + comment.Id;
+            var downvoteId = "commentDownVote" + comment.Id;
+            var commentVotesCountId = "commentVotesCount" + comment.Id;
+            var commentVoteFormId = "commentVoteForm" + comment.Id;
+            var commentContentId = "commentContent" + comment.Id;
+            var editCommentId = "editCommentForm" + comment.Id;
+
+            <div class="d-flex flex-row">
+                <div class="p-2"><span><img src="@comment.UserImageUrl" alt="user" width="50"></span></div>
+                <div class="w-100">
+                    <div class="d-flex row justify-content-between mx-2">
+                        <div class="d-flex align-items-start flex-column mb-1">
+                            <h5><a asp-controller="Users" asp-action="Show" asp-route-id="@comment.UserId">@comment.UserUserName</a></h5>
+                            <div> <span>@comment.CreatedOnString</span></div>
+                            @if ((this.SignInManager.IsSignedIn(this.User) && currentUser.Id == comment.UserId) || await this.SignInManager.UserManager.IsInRoleAsync(currentUser, GlobalConstants.AdministratorRoleName))
+                            {
+                                <div class="d-flex flex-row justify-content-start mt-1">
+                                    <button class="btn btn-success btn-sm mr-1" onclick="toggleCommentEdit(@comment.Id)">Edit</button>
+
+                                    <form asp-controller="Comments" asp-action="Delete" method="post" class="ml-1">
+                                        <div>
+                                            <input type="hidden" name="Id" value="@comment.Id" />
+                                            <input type="hidden" name="PostId" value="@Model.Id" />
+                                        </div>
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                        <form id="@commentVoteFormId" method="post">
+                            <div class="d-flex align-items-start flex-column mb-3">
+                                <a onclick="sendCommentVote(@comment.Id, true)">
+                                    <i id="@upvoteId" class="fa fa-sort-up fa-lg text-success"></i>
+                                </a>
+                                <div id="@commentVotesCountId" class="font-weight-bold mx-auto">@comment.VoteForCommentCount</div>
+                                <a onclick="sendCommentVote(@comment.Id, false)">
+                                    <i id="@downvoteId" class="fa fa-sort-down fa-lg text-success"></i>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    <hr />
+                    <div id="@commentContentId">
+                        <p>@Html.Raw(comment.SanitizedContent)</p>
+                        <div class="d-flex justify-content-end mx-1">
+                            <a class="btn btn-secondary mb-2 text-white font-weight-bold mx-1 fa fa-mail-reply" onclick="showAddReplyForm(@comment.Id)"> Reply</a>
+                        </div>
+                    </div>
+                    <div id="@editCommentId" style="display: none">
+                        <form asp-controller="Comments" asp-action="Edit" method="post">
+                            <div>
+                                <input type="hidden" name="Id" value="@comment.Id" />
+                                <input type="hidden" name="PostId" value="@Model.Id" />
+                            </div>
+                            <div>
+                                <textarea rows="10" name="Content" id="Content" class="form-control">@Html.Raw(comment.SanitizedContent)</textarea>
+                            </div>
+                            <div class="px-4 pt-3 d-flex justify-content-start mb-2"> <button type="submit" class="btn btn-primary">Save Changes</button> </div>
+                        </form>
+                    </div>
+                    <div id="@formId" style="display: none">
+                        <form asp-controller="Comments" asp-action="Create" method="post">
+                            <div>
+                                <input type="hidden" name="ParentId" value="@comment.Id" />
+                                <input type="hidden" name="PostId" value="@this.Model.Id" />
+                            </div>
+                            <div>
+                                <textarea rows="10" name="Content" id="Content" class="form-control"></textarea>
+                            </div>
+                            <div class="px-4 pt-3 d-flex justify-content-start mb-2"> <button type="submit" class="btn btn-primary">Add Comment</button> </div>
+                        </form>
+                    </div>
+                    <hr />
+                    @await DisplayComments(comment.Id)
+                </div>
+            </div>
+        }
+        return null;
+    }
 }
+
+<script src="https://cdn.tiny.cloud/1/dugs9z1a0rbd72se2jv2pyteyj2zvy4oq9iwb7abufch5vi3/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        plugins: [
+            "image paste table link code media"
+        ]
+    });
+</script>
 
 <div class="container-fluid">
     <div class="row">
@@ -48,6 +150,17 @@
                             <a class="bg-success text-white mb-auto p-1 rounded align-content-start" asp-controller="Categories" asp-action="ById" asp-route-id="@Model.CategoryId">@Model.CategoryName</a>
                             <h2 class="font-weight-bold">@Model.Title</h2>
                         </div>
+                        <form id="votesForm" method="post">
+                            <div class="d-flex align-items-start flex-column mb-3">
+                                <a onclick="sendVote(@Model.Id, true)">
+                                    <i id="upVote" class="fa fa-sort-up fa-lg text-success"></i>
+                                </a>
+                                <div id="votesCount" class="font-weight-bold mx-auto">@Model.VotesCount</div>
+                                <a onclick="sendVote(@Model.Id, false)">
+                                    <i id="downVote" class="fa fa-sort-down fa-lg text-success"></i>
+                                </a>
+                            </div>
+                        </form>
                     </div>
                     <hr />
                     <p>
@@ -80,3 +193,145 @@
         </div>
     </div>
 </div>
+<div class="container-fluid" id="comments">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Comments</h4>
+                    <hr />
+                    @if (this.SignInManager.IsSignedIn(this.User))
+                    {
+                        @if (!Model.Comments.Any())
+                        {
+                            <div class="d-flex flex-row">
+                                <div class="w-100">
+                                    <h2 class="text-center text-secondary font-weight-bold">There are still no comments on this post! Be the first to comment now!</h2>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @await DisplayComments(0)
+                        }
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-row">
+                            <h2 class="text-secondary font-weight-bold text-center">Only logged in users can see comments! Please <a asp-area="Identity" asp-page="/Account/Login">login</a> or <a asp-area="Identity" asp-page="/Account/Register">register</a> now.</h2>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(getVoteStatus());
+
+        $(document).ready(function() {
+            @foreach (var comment in Model.Comments)
+            {
+                @:getCommentVoteStatus(@comment.Id);
+            }
+        });
+
+        function showAddReplyForm(id) {
+            $("#AddReplyForm" + id.toString()).toggle();
+        }
+
+        function showAddCommentForm() {
+            $('#AddCommentForm').toggle();
+        }
+
+        function toggleCommentEdit(commentId) {
+            $("#editCommentForm" + commentId).toggle();
+            $("#commentContent" + commentId).toggle();
+        }
+
+        function sendVote(postId, isUpVote) {
+            var token = $("#votesForm input[name=__RequestVerificationToken]").val();
+            var json = { postId: postId, isUpVote: isUpVote };
+            $.ajax({
+                url: "/api/votes",
+                type: "POST",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: { 'X-CSRF-TOKEN': token },
+                success: function(data) {
+                    $("#votesCount").html(data.votesCount);
+                    getVoteStatus();
+                }
+            });
+        }
+
+        function sendCommentVote(commentId, isUpVote) {
+            var token = $("#commentVoteForm" + commentId + " input[name=__RequestVerificationToken]").val();
+            var json = { commentId: commentId, isUpVote: isUpVote };
+            $.ajax({
+                url: "/api/votesForComments",
+                type: "POST",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: { 'X-CSRF-TOKEN': token },
+                success: function(data) {
+                    $("#commentVotesCount" + commentId).html(data.votesCount);
+                    getCommentVoteStatus(commentId);
+                }
+            });
+        }
+
+        function getVoteStatus() {
+            var token = $("#commentVoteForm input[name=__RequestVerificationToken]").val();
+
+            $.ajax({
+                url: "/api/votes/@Model.Id",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: { 'X-CSRF-TOKEN': token },
+                success: function(data) {
+                    if (data === 0) {
+                        $("#upVote").css("text-shadow", "");
+                        $("#downVote").css("text-shadow", "");
+                    } else if (data === 1) {
+                        $("#upVote").css("text-shadow", "0 0 6px #FF4500");
+                        $("#downVote").css("text-shadow", "");
+                    } else {
+                        $("#downVote").css("text-shadow", "0 0 6px #FF4500");
+                        $("#upVote").css("text-shadow", "");
+                    }
+                }
+            });
+        }
+
+        function getCommentVoteStatus(commentId) {
+            var token = $("#commentVoteForm" + commentId + " input[name=__RequestVerificationToken]").val();
+
+            $.ajax({
+                url: "/api/votesForComments/" + commentId,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: { 'X-CSRF-TOKEN': token },
+                success: function(data) {
+                    if (data === 0) {
+                        $("#commentUpVote" + commentId).css("text-shadow", "");
+                        $("#commentDownVote" + commentId).css("text-shadow", "");
+                    } else if (data === 1) {
+                        $("#commentUpVote" + commentId).css("text-shadow", "0 0 6px #FF4500");
+                        $("#commentDownVote" + commentId).css("text-shadow", "");
+                    } else {
+                        $("#commentDownVote" + commentId).css("text-shadow", "0 0 6px #FF4500");
+                        $("#commentUpVote" + commentId).css("text-shadow", "");
+                    }
+                }
+            });
+        }
+    </script>
+}

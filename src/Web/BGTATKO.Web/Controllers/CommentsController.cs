@@ -4,6 +4,8 @@
     using Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Services.Data.Contracts;
+    using ViewModels.Comments;
 
     public class CommentsController : BaseController
     {
