@@ -12,18 +12,21 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
 
+        private readonly SignInManager<ApplicationUser> signInManager;
+
         private readonly IVotesService votesService;
 
         private readonly IVotesForCommentsService votesForCommentsService;
 
         private readonly IUsersService usersService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IVotesService votesService, IVotesForCommentsService votesForCommentsService, IUsersService usersService)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IVotesService votesService, IVotesForCommentsService votesForCommentsService, IUsersService usersService)
         {
             this.userManager = userManager;
             this.votesService = votesService;
             this.votesForCommentsService = votesForCommentsService;
             this.usersService = usersService;
+            this.signInManager = signInManager;
         }
 
         [HttpGet]
@@ -60,6 +63,46 @@
                 input.ImageUrl, user.Id);
 
             return this.Redirect("/");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassowrd(ChangePasswordInputModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            var user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                return this.NotFound($"Unable to load user wid ID '{this.userManager.GetUserId(this.User)}'");
+            }
+
+            var changePasswordResult =
+                await this.userManager.ChangePasswordAsync(user, input.OldPassword, input.NewPassword);
+
+            if (!changePasswordResult.Succeeded)
+            {
+                foreach (var error in changePasswordResult.Errors)
+                {
+                    this.ModelState.AddModelError(error.Code, error.Description);
+                }
+
+                return this.View(input);
+            }
+
+            await this.signInManager.RefreshSignInAsync(user);
+
+            return this.RedirectToAction("Manage", "Account");
         }
     }
 }
