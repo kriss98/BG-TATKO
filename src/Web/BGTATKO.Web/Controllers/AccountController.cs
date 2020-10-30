@@ -74,7 +74,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> ChangePassowrd(ChangePasswordInputModel input)
+        public async Task<IActionResult> ChangePassword(ChangePasswordInputModel input)
         {
             if (!this.ModelState.IsValid)
             {
