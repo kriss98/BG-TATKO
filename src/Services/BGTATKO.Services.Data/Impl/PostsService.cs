@@ -18,7 +18,7 @@
             this.postsRepository = postsRepository;
         }
 
-        public async Task CreateAsync(string title, string content, int categoryId, string userId)
+        public async Task<int> CreateAsync(string title, string content, int categoryId, string userId)
         {
             var post = new Post
             {
@@ -30,6 +30,8 @@
 
             await this.postsRepository.AddAsync(post);
             await this.postsRepository.SaveChangesAsync();
+
+            return post.Id;
         }
 
         public IEnumerable<T> GetAllByCategoryId<T>(int categoryId, int take, int skip)

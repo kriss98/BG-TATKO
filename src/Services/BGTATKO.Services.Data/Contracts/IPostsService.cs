@@ -5,7 +5,7 @@
 
     public interface IPostsService
     {
-        Task CreateAsync(string title, string content, int categoryId, string userId);
+        Task<int> CreateAsync(string title, string content, int categoryId, string userId);
 
         IEnumerable<T> GetAllByCategoryId<T>(int categoryId, int take, int skip);
 

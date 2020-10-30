@@ -46,9 +46,9 @@
 
             var user = await this.userManager.GetUserAsync(this.User);
 
-            await this.postsService.CreateAsync(input.Title, input.Content, input.CategoryId, user.Id);
-            //TODO: change this
-            return this.Redirect("/");
+            var id = await this.postsService.CreateAsync(input.Title, input.Content, input.CategoryId, user.Id);
+
+            return this.RedirectToAction("ById", "Posts", new {Id = id});
         }
 
         [HttpGet]
