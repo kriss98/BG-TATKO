@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Data.Models;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services.Data.Contracts;
@@ -20,6 +21,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CreateCommentInputModel input)
         {
             if (!this.ModelState.IsValid)

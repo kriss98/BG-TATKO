@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Data.Models;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services.Data.Contracts;
@@ -23,6 +24,7 @@
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Create()
         {
             var viewModel = new CreatePostInputModel
@@ -34,6 +36,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CreatePostInputModel input)
         {
             if (!this.ModelState.IsValid)
@@ -44,7 +47,7 @@
             var user = await this.userManager.GetUserAsync(this.User);
 
             await this.postsService.CreateAsync(input.Title, input.Content, input.CategoryId, user.Id);
-
+            //TODO: change this
             return this.Redirect("/");
         }
 

@@ -5,6 +5,7 @@
 
     using BGTATKO.Services.Data.Contracts;
     using BGTATKO.Web.ViewModels.Categories;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     public class CategoriesController : BaseController
@@ -20,12 +21,14 @@
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Create()
         {
             return this.View();
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CreateCategoryInputModel input)
         {
             if (!this.ModelState.IsValid)

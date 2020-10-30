@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Data.Models;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services.Data.Contracts;
@@ -22,6 +23,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<VoteResponseModel>> Post(VoteInputModel input)
         {
             var user = await this.userManager.GetUserAsync(this.User);
@@ -35,6 +37,7 @@
         }
 
         [HttpGet("{postId}")]
+        [Authorize]
         public async Task<ActionResult<int>> Get(int postId)
         {
             var user = await this.userManager.GetUserAsync(this.User);
