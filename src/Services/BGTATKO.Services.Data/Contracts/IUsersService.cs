@@ -5,5 +5,7 @@
     public interface IUsersService
     {
         Task<T> GetUserByIdAsync<T>(string id);
+
+        Task UpdateAsync(string firstName, string lastName, string phoneNumber, string email, string imageUrl, string id);
     }
 }

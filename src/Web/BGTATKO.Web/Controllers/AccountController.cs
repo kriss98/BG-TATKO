@@ -44,5 +44,22 @@
 
             return this.View(viewModel);
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Manage(ManageAccountViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            await this.usersService.UpdateAsync(input.FirstName, input.LastName, input.PhoneNumber, input.Email,
+                input.ImageUrl, user.Id);
+
+            return this.Redirect("/");
+        }
     }
 }

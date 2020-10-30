@@ -21,5 +21,19 @@
         {
             return await this.userRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
         }
+
+        public async Task UpdateAsync(string firstName, string lastName, string phoneNumber, string email, string imageUrl, string id)
+        {
+            var user = await this.userRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.PhoneNumber = phoneNumber;
+            user.Email = email;
+            user.ImageUrl = imageUrl;
+
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
+        }
     }
 }
