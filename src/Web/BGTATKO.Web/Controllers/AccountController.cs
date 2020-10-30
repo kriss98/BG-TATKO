@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services.Data.Contracts;
+    using ViewModels.Account;
 
     public class AccountController : BaseController
     {
@@ -31,7 +32,7 @@
         {
             var user = await this.userManager.GetUserAsync(this.User);
 
-            var viewModel = await this.usersService.GetUserByIdAsync<ManageAccountViewModel>()(user.Id);
+            var viewModel = await this.usersService.GetUserByIdAsync<ManageAccountViewModel>(user.Id);
 
             if (viewModel == null)
             {
