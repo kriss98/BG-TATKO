@@ -1,0 +1,15 @@
+﻿<div class="col-sm-3">
+    <div class="text-center">
+        <img src="@Model.ImageUrl" class="img-thumbnail" alt="avatar">
+        <h2>@Model.UserName</h2>
+    </div><hr><br>
+    <ul class="list-group">
+        <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
+        <li class="list-group-item text-right d-flex justify-content-between"><span class="fa fa-commenting"><strong> Comments</strong></span> @Model.CommentsCount</li>
+        <li class="list-group-item text-right d-flex justify-content-between"><span class="fa fa-newspaper-o"><strong> Posts</strong></span> @Model.PostsCount</li>
+        <li class="list-group-item text-right d-flex justify-content-between"><span class="fa fa-thumbs-o-up"><strong> Posts Karma</strong></span> @Model.PostsKarma</li>
+        <li class="list-group-item text-right d-flex justify-content-between"><span class="fa fa fa-commenting-o"><strong> Comments Karma</strong></span> @Model.CommentsKarma</li>
+        <li class="list-group-item text-right d-flex justify-content-between"><span class="fa fa-users"><strong> Followers</strong></span> @Model.FollowersCount</li>
+        <li class="list-group-item text-right d-flex justify-content-between"><span class="fa fa-user-plus"><strong> Following</strong></span> @Model.FollowingCount</li>
+    </ul>
+</div>

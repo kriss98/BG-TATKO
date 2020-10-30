@@ -1,0 +1,53 @@
+﻿@model BGTATKO.Web.ViewModels.Account.ManageAccountViewModel
+@{ this.ViewData["Title"] = "Manage account"; }
+
+<hr />
+<div class="container">
+    <div class="row">
+        <partial name="_ProfilePartial" />
+        <div class="col-sm-9">
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="text-secondary">Edit your profile info</h2>
+                        <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-primary text-center">Change Password</a>
+                    </div>
+                    <form method="post" asp-controller="Account" asp-action="Manage">
+                        <hr />
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" asp-for="@Model.FirstName"></label>
+                            <input asp-for="@Model.FirstName" class="form-control" placeholder="First name..." />
+                            <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" asp-for="@Model.LastName"></label>
+                            <input asp-for="@Model.LastName" class="form-control" placeholder="Last name..." />
+                            <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" asp-for="@Model.PhoneNumber"></label>
+                            <input asp-for="@Model.PhoneNumber" class="form-control" placeholder="Phone number..." />
+                            <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" asp-for="@Model.ImageUrl"></label>
+                            <input asp-for="@Model.ImageUrl" class="form-control" placeholder="Image Url..." />
+                            <span asp-validation-for="@Model.ImageUrl" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" asp-for="@Model.Email"></label>
+                            <input asp-for="@Model.Email" class="form-control" placeholder="Email..." />
+                            <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
