@@ -18,6 +18,8 @@ namespace BGTATKO.Data.Models
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.Posts = new HashSet<Post>();
             this.Comments = new HashSet<Comment>();
+            this.Followers = new HashSet<UserFollower>();
+            this.Following = new HashSet<UserFollower>();
         }
 
         // Audit info
@@ -45,5 +47,9 @@ namespace BGTATKO.Data.Models
         public virtual ICollection<Post> Posts { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<UserFollower> Followers { get; set; }
+
+        public virtual ICollection<UserFollower> Following { get; set; }
     }
 }

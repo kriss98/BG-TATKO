@@ -76,6 +76,18 @@
             {
                 foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
             }
+
+            builder.Entity<UserFollower>()
+                .HasOne(l => l.User)
+                .WithMany(a => a.Following)
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserFollower>()
+                .HasOne(l => l.Follower)
+                .WithMany(a => a.Followers)
+                .HasForeignKey(l => l.FollowerId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)
