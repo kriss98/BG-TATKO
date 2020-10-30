@@ -28,6 +28,7 @@
                               new RolesSeeder(),
                               new CategoriesSeeder(),
                               new PostsSeeder(),
+                              new CommentsSeeder(),
                           };
 
             foreach (var seeder in seeders)
