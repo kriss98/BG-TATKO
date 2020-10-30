@@ -12,5 +12,9 @@
         int GetPostsCountByCategoryId(int categoryId);
 
         Task<T> GetPostByIdAsync<T>(int id);
+
+        IEnumerable<T> GetByUserId<T>(string userId, int? take = null, int skip = 0);
+
+        int GetPostsCountByUserId(string userId);
     }
 }

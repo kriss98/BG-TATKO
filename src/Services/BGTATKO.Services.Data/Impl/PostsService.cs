@@ -49,5 +49,22 @@
         {
             return await this.postsRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
         }
+
+        public IEnumerable<T> GetByUserId<T>(string userId, int? take = null, int skip = 0)
+        {
+            var query = this.postsRepository.All().OrderByDescending(x => x.CreatedOn).Where(x => x.UserId == userId)
+                .Skip(skip);
+            if (take.HasValue)
+            {
+                query = query.Take(take.Value);
+            }
+
+            return query.To<T>().ToList();
+        }
+
+        public int GetPostsCountByUserId(string userId)
+        {
+            return this.postsRepository.All().Count(x => x.UserId == userId);
+        }
     }
 }
