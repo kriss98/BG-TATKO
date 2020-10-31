@@ -61,7 +61,7 @@
 
         public int GetAllVotesForUserComment(string userId)
         {
-            var karma = this.voteForCommentRepository.All().Where(x => x.UserId == userId).Sum(x => (int) x.Type);
+            var karma = this.voteForCommentRepository.All().Where(x => x.Comment.UserId == userId).Sum(x => (int) x.Type);
 
             return karma;
         }
