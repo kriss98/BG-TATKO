@@ -5,6 +5,7 @@
 
     using BGTATKO.Services.Data.Contracts;
     using BGTATKO.Web.ViewModels.Categories;
+    using Common;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
@@ -55,6 +56,18 @@
             var count = this.postsService.GetPostsCountByCategoryId(viewModel.Id);
             viewModel.PagesCount = (int) Math.Ceiling((double) count / 10);
             viewModel.CurrentPage = page;
+
+            return this.View(viewModel);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public IActionResult Manage()
+        {
+            var viewModel = new ManageCategoriesViewModel
+            {
+                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
+            };
 
             return this.View(viewModel);
         }
