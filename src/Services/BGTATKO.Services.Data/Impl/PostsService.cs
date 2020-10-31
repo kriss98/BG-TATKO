@@ -66,5 +66,10 @@
         {
             return this.postsRepository.All().Count(x => x.UserId == userId);
         }
+
+        public IEnumerable<T> GetAllPosts<T>()
+        {
+            return this.postsRepository.All().To<T>().ToList();
+        }
     }
 }

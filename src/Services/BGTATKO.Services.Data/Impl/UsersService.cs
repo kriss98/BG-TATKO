@@ -1,5 +1,6 @@
 ﻿namespace BGTATKO.Services.Data.Impl
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using BGTATKO.Data.Common.Repositories;
@@ -64,6 +65,11 @@
         {
             return this.userFollowerRepository.All()
                 .FirstOrDefault(x => x.FollowerId == userId && x.UserId == currentUserId) != null;
+        }
+
+        public IEnumerable<T> GetAllUsers<T>()
+        {
+            return this.userRepository.All().To<T>().ToList();
         }
     }
 }

@@ -16,5 +16,7 @@
         IEnumerable<T> GetByUserId<T>(string userId, int? take = null, int skip = 0);
 
         int GetPostsCountByUserId(string userId);
+
+        IEnumerable<T> GetAllPosts<T>();
     }
 }

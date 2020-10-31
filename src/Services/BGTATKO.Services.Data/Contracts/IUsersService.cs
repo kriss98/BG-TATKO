@@ -1,5 +1,6 @@
 ﻿namespace BGTATKO.Services.Data.Contracts
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IUsersService
@@ -13,5 +14,7 @@
         Task UnfollowUser(string followerId, string id);
 
         bool CheckIfUserFollowsUser(string currentUserId, string userId);
+
+        IEnumerable<T> GetAllUsers<T>();
     }
 }
