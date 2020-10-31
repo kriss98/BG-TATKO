@@ -33,5 +33,9 @@
          public int PostsKarma { get; set; }
 
          public int CommentsKarma { get; set; }
+
+         public int FollowersCount { get; set; }
+
+         public int FollowingCount { get; set; }
     }
 }

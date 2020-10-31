@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using Data.Models;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services.Data.Contracts;
@@ -30,7 +31,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Show(string id, int page)
+        public async Task<IActionResult> Show(string id, int page = 1)
         {
             var viewModel = await this.usersService.GetUserByIdAsync<ViewUserViewModel>(id);
 
@@ -47,9 +48,41 @@
             viewModel.CommentsKarma = this.votesForCommentsService.GetAllVotesForUserComment(id);
 
             var user = await this.userManager.GetUserAsync(this.User);
-            viewModel.IsFollowedByCurrentUser = false; //TODO: Implement this later
+            viewModel.IsFollowedByCurrentUser = this.usersService.CheckIfUserFollowsUser(user.Id, id);
 
             return this.View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Follow(string id)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            if (user.Id == id)
+            {
+                return this.BadRequest();
+            }
+
+            await this.usersService.FollowUser(id, user.Id);
+
+            return this.RedirectToAction("Show", "Users", new { id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Unfollow(string id)
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            if (user.Id == id)
+            {
+                return this.BadRequest();
+            }
+
+            await this.usersService.UnfollowUser(id, user.Id);
+
+            return this.RedirectToAction("Show", "Users", new {id});
         }
     }
 }

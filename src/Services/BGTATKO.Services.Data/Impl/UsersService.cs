@@ -12,9 +12,12 @@
     {
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
 
-        public UsersService(IDeletableEntityRepository<ApplicationUser> userRepository)
+        private readonly IDeletableEntityRepository<UserFollower> userFollowerRepository;
+
+        public UsersService(IDeletableEntityRepository<ApplicationUser> userRepository, IDeletableEntityRepository<UserFollower> userFollowerRepository)
         {
             this.userRepository = userRepository;
+            this.userFollowerRepository = userFollowerRepository;
         }
 
         public async Task<T> GetUserByIdAsync<T>(string id)
@@ -34,6 +37,33 @@
 
             this.userRepository.Update(user);
             await this.userRepository.SaveChangesAsync();
+        }
+
+        public async Task FollowUser(string followerId, string id)
+        {
+            var userFollower = new UserFollower
+            {
+                UserId = id,
+                FollowerId = followerId,
+            };
+
+            await this.userFollowerRepository.AddAsync(userFollower);
+            await this.userFollowerRepository.SaveChangesAsync();
+        }
+
+        public async Task UnfollowUser(string followerId, string id)
+        {
+            var userFollower = this.userFollowerRepository.All()
+                .FirstOrDefault(x => x.FollowerId == followerId && x.UserId == id);
+
+            this.userFollowerRepository.Delete(userFollower);
+            await this.userFollowerRepository.SaveChangesAsync();
+        }
+
+        public bool CheckIfUserFollowsUser(string currentUserId, string userId)
+        {
+            return this.userFollowerRepository.All()
+                .FirstOrDefault(x => x.FollowerId == userId && x.UserId == currentUserId) != null;
         }
     }
 }

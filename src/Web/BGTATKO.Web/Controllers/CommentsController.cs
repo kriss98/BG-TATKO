@@ -31,7 +31,7 @@
 
             var user = await this.userManager.GetUserAsync(this.User);
 
-            int? parentId = input.ParentId == 0 ? (int?) null : input.ParentId;
+            int? parentId = input.ParentId == 0 ? (int?)null : input.ParentId;
 
             if (parentId.HasValue)
             {
