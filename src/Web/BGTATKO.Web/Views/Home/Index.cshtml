@@ -15,7 +15,8 @@
         <li class="list-group-item">
             <i class="fa fa-star"></i>
             @i.
-            <a asp-controller="Users" asp-action="Show" asp-route-id="@Model.TopPosters.ElementAt(i - 1).Id">@Model.TopPosters.ElementAt(i - 1).UserName</a> - @Model.TopPosters.ElementAt(i - 1).PostsKarma Posts Karma
+            <a asp-controller="Users" asp-action="Show" asp-route-id="@Model.TopPosters.ElementAt(i - 1).Id">@Model.TopPosters.ElementAt(i - 1).UserName</a>
+            <div>@Model.TopPosters.ElementAt(i - 1).PostsKarma Posts Karma</div>
         </li>}
                 </ul>
             </div>
@@ -30,7 +31,8 @@
         <li class="list-group-item">
             <i class="fa fa-star"></i>
             @i.
-            <a asp-controller="Users" asp-action="Show" asp-route-id="@Model.TopCommenters.ElementAt(i - 1).Id">@Model.TopCommenters.ElementAt(i - 1).UserName</a> - @Model.TopCommenters.ElementAt(i - 1).CommentsKarma Comments Karma
+            <a asp-controller="Users" asp-action="Show" asp-route-id="@Model.TopCommenters.ElementAt(i - 1).Id">@Model.TopCommenters.ElementAt(i - 1).UserName</a>
+            <div>@Model.TopCommenters.ElementAt(i - 1).CommentsKarma Comments Karma</div>
         </li>}
                 </ul>
             </div>
@@ -67,7 +69,8 @@
         <li class="list-group-item">
             <i class="fa fa-star"></i>
             @i.
-            <a asp-controller="Posts" asp-action="ById" asp-route-id="@Model.TopPosts.ElementAt(i - 1).Id">@Model.TopPosts.ElementAt(i - 1).Title</a> - @Model.TopPosts.ElementAt(i - 1).VotesCount Votes
+            <a asp-controller="Posts" asp-action="ById" asp-route-id="@Model.TopPosts.ElementAt(i - 1).Id">@Model.TopPosts.ElementAt(i - 1).Title</a>
+            <div>@Model.TopPosts.ElementAt(i - 1).VotesCount Votes</div>
         </li>}
                 </ul>
             </div>

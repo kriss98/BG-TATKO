@@ -11,12 +11,15 @@
          public string UserName { get; set; }
 
          [MinLength(2)]
+         [Display(Name = "First name")]
          public string FirstName { get; set; }
 
          [MinLength(2)]
+         [Display(Name = "Last name")]
          public string LastName { get; set; }
 
          [Phone]
+         [Display(Name = "Phone number")]
          public string PhoneNumber { get; set; }
 
          [Required]
@@ -24,6 +27,7 @@
          public string Email { get; set; }
 
          [Url]
+         [Display(Name = "Image URL")]
          public string ImageUrl { get; set; }
 
          public int PostsCount { get; set; }
