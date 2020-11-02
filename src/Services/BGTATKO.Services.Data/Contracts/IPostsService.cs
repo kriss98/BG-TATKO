@@ -21,6 +21,10 @@
 
         Task<bool> PostExists(int id);
 
-        Task EditAsync(string title, string content, int categoryId, int id, string userId, bool isAdmin);
+        Task EditAsync(string title, string content, int categoryId, int id);
+
+        Task DeleteAsync(int id);
+
+        Task<bool> IsUserPostAuthor(int postId, string userId);
     }
 }

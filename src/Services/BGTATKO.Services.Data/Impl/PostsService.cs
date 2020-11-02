@@ -77,14 +77,9 @@
             return await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == id) != null;
         }
 
-        public async Task EditAsync(string title, string content, int categoryId, int id, string userId, bool isAdmin)
+        public async Task EditAsync(string title, string content, int categoryId, int id)
         {
             var post = await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == id);
-
-            if (post.UserId != userId && !isAdmin)
-            {
-                return;
-            }
 
             post.Title = title;
             post.Content = content;
@@ -92,6 +87,21 @@
 
             this.postsRepository.Update(post);
             await this.postsRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var post = await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            this.postsRepository.Delete(post);
+            await this.postsRepository.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsUserPostAuthor(int postId, string userId)
+        {
+            var post = await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == postId);
+
+            return userId == post.UserId;
         }
     }
 }

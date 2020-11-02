@@ -100,9 +100,36 @@
             var user = await this.userManager.GetUserAsync(this.User);
             var isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
 
-            await this.postsService.EditAsync(input.Title, input.Content, input.CategoryId, input.Id, user.Id, isAdmin);
+            if (!await this.postsService.IsUserPostAuthor(input.Id, user.Id) && !isAdmin)
+            {
+                return this.BadRequest();
+            }
+
+            await this.postsService.EditAsync(input.Title, input.Content, input.CategoryId, input.Id);
 
             return this.RedirectToAction("ById", "Posts", new { Id = input.Id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!await this.postsService.PostExists(id))
+            {
+                return this.NotFound();
+            }
+
+            var user = await this.userManager.GetUserAsync(this.User);
+            var isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
+
+            if (!await this.postsService.IsUserPostAuthor(id, user.Id) && !isAdmin)
+            {
+                return this.BadRequest();
+            }
+
+            await this.postsService.DeleteAsync(id);
+
+            return this.Redirect("/");
         }
     }
 }
