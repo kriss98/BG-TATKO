@@ -73,5 +73,33 @@
 
             return this.RedirectToAction("ById", "Posts", new { Id = input.PostId });
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Delete(DeleteCommentInputModel input)
+        {
+            if (!await this.commentsService.CommentExists(input.Id))
+            {
+                return this.NotFound();
+            }
+
+            var commentAndChildren =
+                await this.commentsService.GetAllCommentChildrenById<DeleteCommentInputModel>(input.Id);
+
+            var user = await this.userManager.GetUserAsync(this.User);
+            var isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
+
+            foreach (var comment in commentAndChildren)
+            {
+                if (!await this.commentsService.IsUserCommentAuthor(comment.Id, user.Id) && !isAdmin)
+                {
+                    return this.BadRequest();
+                }
+
+                await this.commentsService.DeleteAsync(comment.Id);
+            }
+
+            return this.RedirectToAction("ById", "Posts", new { Id = input.PostId });
+        }
     }
 }

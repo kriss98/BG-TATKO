@@ -1,10 +1,12 @@
 ﻿namespace BGTATKO.Services.Data.Impl
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using BGTATKO.Data.Common.Repositories;
     using BGTATKO.Data.Models;
     using Contracts;
+    using Mapping;
     using Microsoft.EntityFrameworkCore;
 
     public class CommentsService : ICommentsService
@@ -58,6 +60,37 @@
 
             this.commentsRepository.Update(comment);
             await this.commentsRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var comment = await this.commentsRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            this.commentsRepository.Delete(comment);
+            await this.commentsRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAllCommentChildrenById<T>(int id)
+        {
+            var allChildren = new List<T>();
+            var comment = await this.commentsRepository.All().Where(x => x.Id == id).To<T>().FirstOrDefaultAsync();
+            allChildren = await this.GetChildren(id, allChildren);
+            allChildren.Add(comment);
+
+            return allChildren;
+        }
+
+        private async Task<List<T>> GetChildren<T>(int id, List<T> allChildren)
+        {
+            var children = this.commentsRepository.All().Where(x => x.ParentId == id);
+
+            foreach (var child in children)
+            {
+                await GetChildren<T>(child.Id, allChildren);
+                allChildren.Add(await this.commentsRepository.All().Where(x => x.Id == child.Id).To<T>().FirstOrDefaultAsync());
+            }
+
+            return allChildren;
         }
     }
 }
