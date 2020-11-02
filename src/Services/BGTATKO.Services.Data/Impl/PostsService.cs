@@ -13,9 +13,12 @@
     {
         private readonly IDeletableEntityRepository<Post> postsRepository;
 
-        public PostsService(IDeletableEntityRepository<Post> postsRepository)
+        private readonly IDeletableEntityRepository<Comment> commentRepository;
+
+        public PostsService(IDeletableEntityRepository<Post> postsRepository, IDeletableEntityRepository<Comment> commentRepository)
         {
             this.postsRepository = postsRepository;
+            this.commentRepository = commentRepository;
         }
 
         public async Task<int> CreateAsync(string title, string content, int categoryId, string userId)
@@ -92,6 +95,11 @@
         public async Task DeleteAsync(int id)
         {
             var post = await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            foreach (var comment in this.commentRepository.All().Where(x => x.PostId == post.Id))
+            {
+                this.commentRepository.Delete(comment);
+            }
 
             this.postsRepository.Delete(post);
             await this.postsRepository.SaveChangesAsync();
