@@ -48,5 +48,22 @@
 
             return query.To<T>().ToList();
         }
+
+        public async Task<bool> CategoryExists(int id)
+        {
+            return await this.categoryRepository.All().FirstOrDefaultAsync(x => x.Id == id) != null;
+        }
+
+        public async Task EditAsync(string name, string description, string imageUrl, int id)
+        {
+            var category = await this.categoryRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            category.Name = name;
+            category.Description = description;
+            category.ImageUrl = imageUrl;
+
+            this.categoryRepository.Update(category);
+            await this.categoryRepository.SaveChangesAsync();
+        }
     }
 }

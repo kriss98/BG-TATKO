@@ -71,5 +71,38 @@
 
             return this.View(viewModel);
         }
+
+        [HttpGet]
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (!await this.categoriesService.CategoryExists(id))
+            {
+                return this.BadRequest();
+            }
+
+            var viewModel = await this.categoriesService.GetByIdAsync<EditCategoryInputModel>(id);
+
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> Edit(EditCategoryInputModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            if (!await this.categoriesService.CategoryExists(input.Id))
+            {
+                return this.BadRequest();
+            }
+
+            await this.categoriesService.EditAsync(input.Name, input.Description, input.ImageUrl, input.Id);
+
+            return this.RedirectToAction("ById", "Categories", new { Id = input.Id });
+        }
     }
 }

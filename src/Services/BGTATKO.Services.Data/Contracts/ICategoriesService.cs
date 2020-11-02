@@ -11,5 +11,9 @@
         Task<T> GetByIdAsync<T>(int id);
 
         IEnumerable<T> GetAll<T>(int? count = null);
+
+        Task<bool> CategoryExists(int id);
+
+        Task EditAsync(string name, string description, string imageUrl, int id);
     }
 }
