@@ -5,6 +5,7 @@
     using BGTATKO.Data.Common.Repositories;
     using BGTATKO.Data.Models;
     using Contracts;
+    using Microsoft.EntityFrameworkCore;
 
     public class CommentsService : ICommentsService
     {
@@ -35,6 +36,28 @@
                 .FirstOrDefault();
 
             return commentPostId == postId;
+        }
+
+        public async Task<bool> CommentExists(int id)
+        {
+            return await this.commentsRepository.All().FirstOrDefaultAsync(x => x.Id == id) != null;
+        }
+
+        public async Task<bool> IsUserCommentAuthor(int commentId, string userId)
+        {
+            var comment = await this.commentsRepository.All().FirstOrDefaultAsync(x => x.Id == commentId);
+
+            return comment.UserId == userId;
+        }
+
+        public async Task EditAsync(string content, int id)
+        {
+            var comment = await this.commentsRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            comment.Content = content;
+
+            this.commentsRepository.Update(comment);
+            await this.commentsRepository.SaveChangesAsync();
         }
     }
 }
