@@ -7,7 +7,7 @@
     {
         Task<int> CreateAsync(string title, string content, int categoryId, string userId);
 
-        IEnumerable<T> GetAllByCategoryId<T>(int categoryId, int take, int skip);
+        IEnumerable<T> GetAllByCategoryId<T>(int categoryId, int take, int skip = 0);
 
         int GetPostsCountByCategoryId(int categoryId);
 
@@ -18,5 +18,9 @@
         int GetPostsCountByUserId(string userId);
 
         IEnumerable<T> GetAllPosts<T>();
+
+        Task<bool> PostExists(int id);
+
+        Task EditAsync(string title, string content, int categoryId, int id, string userId, bool isAdmin);
     }
 }

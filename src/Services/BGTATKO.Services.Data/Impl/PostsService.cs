@@ -71,5 +71,27 @@
         {
             return this.postsRepository.All().To<T>().ToList();
         }
+
+        public async Task<bool> PostExists(int id)
+        {
+            return await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == id) != null;
+        }
+
+        public async Task EditAsync(string title, string content, int categoryId, int id, string userId, bool isAdmin)
+        {
+            var post = await this.postsRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            if (post.UserId != userId && !isAdmin)
+            {
+                return;
+            }
+
+            post.Title = title;
+            post.Content = content;
+            post.CategoryId = categoryId;
+
+            this.postsRepository.Update(post);
+            await this.postsRepository.SaveChangesAsync();
+        }
     }
 }
