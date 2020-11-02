@@ -65,5 +65,13 @@
             this.categoryRepository.Update(category);
             await this.categoryRepository.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(int id)
+        {
+            var category = await this.categoryRepository.All().FirstOrDefaultAsync(x => x.Id == id);
+
+            this.categoryRepository.Delete(category);
+            await this.categoryRepository.SaveChangesAsync();
+        }
     }
 }

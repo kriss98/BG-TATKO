@@ -15,5 +15,7 @@
         Task<bool> CategoryExists(int id);
 
         Task EditAsync(string name, string description, string imageUrl, int id);
+
+        Task DeleteAsync(int id);
     }
 }

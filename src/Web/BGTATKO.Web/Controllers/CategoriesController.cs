@@ -78,7 +78,7 @@
         {
             if (!await this.categoriesService.CategoryExists(id))
             {
-                return this.BadRequest();
+                return this.NotFound();
             }
 
             var viewModel = await this.categoriesService.GetByIdAsync<EditCategoryInputModel>(id);
@@ -97,12 +97,26 @@
 
             if (!await this.categoriesService.CategoryExists(input.Id))
             {
-                return this.BadRequest();
+                return this.NotFound();
             }
 
             await this.categoriesService.EditAsync(input.Name, input.Description, input.ImageUrl, input.Id);
 
             return this.RedirectToAction("ById", "Categories", new { Id = input.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!await this.categoriesService.CategoryExists(id))
+            {
+                return this.NotFound();
+            }
+
+            await this.categoriesService.DeleteAsync(id);
+
+            return this.RedirectToAction("Manage", "Categories");
         }
     }
 }
