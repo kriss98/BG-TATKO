@@ -37,10 +37,16 @@
             return post.Id;
         }
 
-        public IEnumerable<T> GetAllByCategoryId<T>(int categoryId, int take, int skip)
+        public IEnumerable<T> GetAllByCategoryId<T>(int categoryId, int? take, int skip)
         {
-            return this.postsRepository.All().Where(x => x.CategoryId == categoryId).Skip(skip).Take(take)
-                .To<T>().ToList();
+            var query = this.postsRepository.All().Where(x => x.CategoryId == categoryId).Skip(skip);
+
+            if (take.HasValue)
+            {
+                query = query.Take(take.Value);
+            }
+
+            return query.To<T>().ToList();
         }
 
         public int GetPostsCountByCategoryId(int categoryId)
